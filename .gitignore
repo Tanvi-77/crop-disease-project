@@ -1,0 +1,25 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Dataset (too large)
+dataset/
+
+# Trained model (large file)
+model/*.h5
+
+# Uploads (user images)
+uploads/
+
+# Database file
+database/history.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
