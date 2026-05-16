@@ -11,6 +11,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.optimizers import Adam
 
 from preprocessing.preprocess import load_data
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 # =========================
@@ -29,6 +30,18 @@ print("y shape:", y.shape)
 # =========================
 
 y = to_categorical(y, num_classes=len(class_names))
+
+# =========================
+# DATA AUGMENTATION
+# =========================
+
+datagen = ImageDataGenerator(
+    rotation_range=20,
+    zoom_range=0.2,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    horizontal_flip=True
+)
 
 
 # =========================
@@ -100,11 +113,9 @@ print("\nModel Compiled Successfully")
 # =========================
 
 history = model.fit(
-    X_train,
-    y_train,
+    datagen.flow(X_train, y_train, batch_size=32),
     validation_data=(X_test, y_test),
-    epochs=5,
-    batch_size=32
+    epochs=7
 )
 
 

@@ -95,17 +95,17 @@ prject exceution:
 run either :
   python preprocessing/preprocess.py
   OR 
-  python training/train_model.py
+  python -m preprocessing.preprocess
 
 
   . training data = 2361 imges
   . testing data = 591 imges
   . total images = 2952 imges
 
-  . Accuracy : How correctly model predicts on training data -- accuracy = 0.9754
-  . val_accuracy : How correctly model predicts on unseen test/validation data  -- 0.9272
-  . loss : How wrongly predicted on testing data -- 0.0855 
-  . val loss : How wrongly predicted on training data-- 0.2186
+  . Accuracy : How correctly model predicts on training data -- accuracy = 0.9754 -- 0.9238
+  . val_accuracy : How correctly model predicts on unseen test/validation data  -- 0.9272 -- 0.9222 
+  . loss : How wrongly predicted on testing data -- 0.0855 -- 0.2232
+  . val loss : How wrongly predicted on training data-- 0.2186  -- 0.2167 
 
 
   3. predictor.py : it will :
@@ -118,7 +118,10 @@ run either :
 
   4. test_predictor.py
     This file is for testing purpose where img path is given to predict the class and solution 
-     
+
+
+NOTE : after 5 epochs and testing with google images , finally done the fisrt commit on 15-05-26 
+to improve accuracy i improve epochs from 5 to 10 then since real world imges are not able to predict better , i did data augmention part with 7 epochs 
     
 
     

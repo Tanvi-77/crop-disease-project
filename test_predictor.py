@@ -1,7 +1,7 @@
 from utils.predictor import predict_image
 
 result = predict_image(
-    r"C:\project\Crop-Disease-Project\uploads\TEB.jpg"
+    r"C:\project\Crop-Disease-Project\dataset\raw\Tomato_Late_blight\ff03c1b7-ae44-4b97-b0c8-ec2c6ca7f4e5___GHLB2ES Leaf 63.1.JPG"
 )
 
 print(result)
