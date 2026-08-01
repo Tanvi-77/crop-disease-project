@@ -1,49 +1,157 @@
-1. create project folder
+# 🌱 Crop Disease Detection System using Machine Learning
+
+An AI-powered web application that detects crop diseases from leaf images using **MobileNetV2 Transfer Learning**. Users can upload a leaf image, and the system predicts the disease, displays the confidence score, and recommends suitable treatments through a rule-based recommendation system.
+
+---
+
+## 📌 Project Overview
+
+Crop diseases can significantly reduce agricultural productivity if they are not identified early. This project aims to help farmers and agriculture enthusiasts detect plant diseases quickly by analyzing leaf images using a deep learning model.
+
+The application is built with **Python** and **Streamlit**, making it simple and interactive. After predicting the disease, the system also provides treatment recommendations and stores prediction history in a SQLite database.
+
+---
+
+## ✨ Features
+
+- Upload crop leaf images
+- Image preprocessing before prediction
+- Disease detection using MobileNetV2
+- Confidence score for every prediction
+- Rule-based treatment recommendations
+- Prediction history stored in SQLite
+- Simple and responsive Streamlit interface
+- Multi-language support (English, Hindi, Marathi)
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Programming Language | Python |
+| Deep Learning | TensorFlow, Keras |
+| Model | MobileNetV2 (Transfer Learning) |
+| Frontend | Streamlit |
+| Database | SQLite |
+| Image Processing | OpenCV, Pillow |
+| Data Handling | NumPy, Pandas |
+| Visualization | Matplotlib |
+
+---
 
 
-2. created files and folders using commands
-mkdir dataset
-  mkdir dataset\raw
-  mkdir dataset\processed
-  mkdir dataset\split
-
-mkdir preprocessing
-  New-Item preprocessing\preprocess.py -ItemType File
-
-mkdir training
-  New-Item training\train_model.py -ItemType File
-  New-Item training\evaluate_model.py -ItemType File
-  New-Item training\config.py -ItemType File
-
-mkdir model
-  New-Item model\labels.json -ItemType File
-
-mkdir utils
-  New-Item utils\predictor.py -ItemType File
-  New-Item utils\solution_mapper.py -ItemType File
-
-mkdir app
-  New-Item app\app.py -ItemType File
-  mkdir app\pages  -- folder
-  mkdir app\components
-
-mkdir database
-  New-Item database\db.py -ItemType File
-  New-Item database\history.db -ItemType File
-
-mkdir uploads
-mkdir outputs
+## ⚙️ Working Flow
 
 
-3. setup
-python -m venv venv  --  venv(envrinment name)
-venv\Scripts\activate   -- activate env
-python -m pip install tensorflow opencv-python numpy pandas matplotlib scikit-learn streamlit pillow  -- installing libraries
+User Uploads Leaf Image
+            │
+            ▼
+ Image Preprocessing
+            │
+            ▼
+ MobileNetV2 Model
+            │
+            ▼
+ Disease Prediction
+            │
+            ▼
+ Confidence Score
+            │
+            ▼
+ Treatment Recommendation
+            │
+            ▼
+ Store Result in SQLite
+            │
+            ▼
+ Display Result on Streamlit
 
 
-note : requirements.txt = list of dependencies needed to run your project    (so anyone Medha, teacher, future me 
-can install the same environment)
-Medha will just run :  pip install -r requirements.txt
-and her setup becomes exactly like yours
+---
 
+## 📊 Supported Crop Classes
 
+### 🍅 Tomato
+- Healthy
+- Early Blight
+- Late Blight
+
+### 🥔 Potato
+- Healthy
+- Early Blight
+- Late Blight
+
+### 🫑 Pepper
+- Healthy
+- Bacterial Spot
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/Crop-Disease-Detection.git
+cd Crop-Disease-Detection
+```
+
+### 2. Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### 3. Activate Virtual Environment
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### 4. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Run the Application
+
+```bash
+streamlit run app/app.py
+```
+
+---
+
+## 💾 Database
+
+SQLite is used to store:
+
+- Prediction history
+- Disease name
+- Confidence score
+- Timestamp
+
+---
+
+## 📸 Future Enhancements
+
+- Support more crop varieties
+- Real-time camera detection
+- Cloud database integration
+- Weather-based disease prediction
+- Fertilizer recommendation
+- Mobile application
+
+---
+
+## 👩‍💻 Author
+
+**Tanvi Salaskar**
+MCA Student
+
+---
+
+## ⭐ If you found this project useful, don't forget to give it a star!
