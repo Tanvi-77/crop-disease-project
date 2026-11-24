@@ -1,4 +1,4 @@
-# 🌱 Crop Disease Detection System using Machine Learning
+# 🌱 Crop Disease Detection System using Deep Learning
 
 An AI-powered web application that detects crop diseases from leaf images using **MobileNetV2 Transfer Learning**. Users can upload a leaf image, and the system predicts the disease, displays the confidence score, and recommends suitable treatments through a rule-based recommendation system.
 
