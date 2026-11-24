@@ -98,8 +98,8 @@ run either :
   python -m preprocessing.preprocess
 
 
-  . training data = 2361 imges
-  . testing data = 591 imges
+  . training data = 2361 imges   80%
+  . testing data = 591 imges     20%
   . total images = 2952 imges
 
   . Accuracy : How correctly model predicts on training data -- accuracy = 0.9754 -- 0.9238

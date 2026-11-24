@@ -1,10 +1,11 @@
 import sqlite3
-
+import os
 # =========================
 # DATABASE NAME
 # =========================
 
 DB_NAME = "database/history.db"
+print("DATABASE PATH:", os.path.abspath(DB_NAME))
 
 # =========================
 # CREATE CONNECTION
@@ -75,6 +76,7 @@ def insert_prediction(
 
     conn.close()
 
+
 # =========================
 # FETCH HISTORY
 # =========================
@@ -96,3 +98,24 @@ def fetch_history():
     conn.close()
 
     return rows
+
+
+
+# =========================
+# DELETE PREDICTION
+# =========================
+
+def delete_prediction(record_id):
+
+    conn = create_connection()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM history
+        WHERE id = ?
+    """, (record_id,))
+
+    conn.commit()
+
+    conn.close()

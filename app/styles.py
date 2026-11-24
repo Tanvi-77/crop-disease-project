@@ -169,6 +169,28 @@ def apply_dark_theme():
             background-color: #22c55e;
         }
 
+             
+        /* =========================
+          AGROTRUST BRAND TITLE
+         ========================= */
+
+        .brand-title {
+
+        text-align: center;
+
+        font-size: 48px;
+
+        font-weight: 800;
+
+        margin-top: 35px;
+
+        margin-bottom: 35px;
+
+        color: white;
+
+        width: 100%;
+        }
+      
         </style>
         """,
         unsafe_allow_html=True

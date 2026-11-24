@@ -57,5 +57,5 @@ def predict_image(image_path):
         "confidence": round(confidence * 100, 2),
         "solution": solutions.get(disease, 
                                   "No solution available"
-                                  )
+                                   )
     }

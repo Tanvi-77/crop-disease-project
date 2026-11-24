@@ -27,7 +27,8 @@ from utils.translations import translations
 from database.db import (
     create_table,
     insert_prediction,
-    fetch_history
+    fetch_history,
+    delete_prediction
 )
 
 from styles import apply_dark_theme
@@ -42,7 +43,7 @@ from auth import (
 # =========================
 
 st.set_page_config(
-    page_title="Crop Disease Detection",
+    page_title="AgroTrust",
     page_icon="🌱",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -68,13 +69,21 @@ if "logged_in" not in st.session_state:
 
     st.session_state.logged_in = False
 
+
 # =========================
 # AUTHENTICATION
 # =========================
 
 if not st.session_state.logged_in:
 
-    st.title("🌱 Crop Disease Detection")
+    st.markdown(
+        """
+        <div class="brand-title">
+            🌱 AgroTrust
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     auth_option = st.sidebar.radio(
         "Authentication",
@@ -90,6 +99,7 @@ if not st.session_state.logged_in:
         register_page()
 
     st.stop()
+
 
 # =========================
 # LANGUAGE SELECTOR
@@ -388,9 +398,17 @@ elif page == text["detection"]:
         type=["jpg", "jpeg", "png"]
     )
 
-    camera_image = st.camera_input(
-        text["camera"]
+
+    
+# Camera input with restricted width
+
+    col1, col2, col3 = st.columns([1,2,1])
+
+    with col2:
+        camera_image = st.camera_input(
+             text["camera"]
     )
+
 
     if uploaded_file is not None or camera_image is not None:
 
@@ -406,11 +424,15 @@ elif page == text["detection"]:
 
         image = Image.open(image_source)
 
-        st.image(
+        img_col1, img_col2, img_col3 = st.columns([1, 2, 1])
+
+        with img_col2:
+          st.image(
             image,
-            caption="Leaf Image",
+            caption="Uploaded Leaf Image",
             use_container_width=True
-        )
+    )
+           
 
         if st.button(text["predict_button"]):
 
@@ -421,10 +443,11 @@ elif page == text["detection"]:
                     suffix=".jpg"
                 ) as tmp_file:
 
+                    image_source.seek(0)
                     tmp_file.write(
-                        image_source.read()
+                         image_source.read()
                     )
-
+    
                     temp_image_path = tmp_file.name
 
                 try:
@@ -499,9 +522,10 @@ elif page == text["detection"]:
                             temp_image_path
                         )
 
-# ============================================================
+
+# =========================
 # HISTORY PAGE
-# ============================================================
+# =========================
 
 elif page == text["history"]:
 
@@ -513,26 +537,62 @@ elif page == text["history"]:
 
         for row in history:
 
-            st.markdown(f"""
-            <div class="custom-card">
+            col1, col2 = st.columns([6, 1])
 
-            <h4>📌 Image: {row[1]}</h4>
+            with col1:
 
-            <p>🦠 {text["disease"]}: {row[2]}</p>
+                st.markdown(f"""
+                <div class="custom-card">
 
-            <p>📊 {text["confidence"]}: {row[3]}%</p>
+                    <h4>📌 Image: {row[1]}</h4>
 
-            <p>💡 {text["solution"]}: {row[4]}</p>
+                    <p>🦠 {text["disease"]}: {row[2]}</p>
 
-            <p>⏰ Time: {row[5]}</p>
+                    <p>📊 {text["confidence"]}: {row[3]}%</p>
 
-            </div>
-            """,
-            unsafe_allow_html=True
-            )
+                    <p>💡 {text["solution"]}: {row[4]}</p>
+
+                    <p>⏰ Time: {row[5]}</p>
+
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col2:
+
+                st.write("")
+
+                if st.button(
+                    "🗑️",
+                    key=f"delete_{row[0]}"
+                ):
+
+                    delete_prediction(row[0])
+
+                    st.success("Prediction deleted successfully!")
+
+                    st.rerun()
 
     else:
 
-        st.info(
-            text["history_empty"]
-        )
+        st.info(text["history_empty"])
+
+
+
+# =========================
+# DELETE PREDICTION
+# =========================
+
+def delete_prediction(record_id):
+
+    conn = create_connection()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM history
+        WHERE id = ?
+    """, (record_id,))
+
+    conn.commit()
+
+    conn.close()
