@@ -24,24 +24,31 @@ with open("model/labels.json", "r") as f:
 IMG_SIZE = 224
 
 
+def preprocess_image(image_path):
+    """Read and preprocess an image identically to the trained classifier."""
+    img = cv2.imread(image_path)
+    if img is None:
+        raise ValueError(f"Unable to read image from path: {image_path}")
+
+    resized = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
+    normalized = resized / 255.0
+    batched = np.expand_dims(normalized, axis=0)
+    return batched, img
+
+
+def get_model():
+    """Return the already-loaded Keras model without reloading."""
+    return model
+
+
 def predict_image(image_path):
 
-    # Read image
-    img = cv2.imread(image_path)
-
-    # Resize
-    img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
-
-    # Normalize
-    img = img / 255.0
-
-    # Expand dimensions
-    img = np.expand_dims(img, axis=0)
+    img, _ = preprocess_image(image_path)
 
     # Predict
     prediction = model.predict(img)
 
-    predicted_index = np.argmax(prediction)
+    predicted_index = int(np.argmax(prediction))
 
     disease = class_names[predicted_index]
 
@@ -55,7 +62,5 @@ def predict_image(image_path):
     return {
         "disease": disease,
         "confidence": round(confidence * 100, 2),
-        "solution": solutions.get(disease, 
-                                  "No solution available"
-                                   )
+        "solution": solution
     }

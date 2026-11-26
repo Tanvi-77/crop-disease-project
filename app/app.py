@@ -22,6 +22,8 @@ sys.path.append(
 # =========================
 
 from utils.predictor import predict_image
+from utils.gradcam import generate_gradcam
+from utils.severity_detector import estimate_severity
 from utils.translations import translations
 
 from database.db import (
@@ -506,6 +508,120 @@ elif page == text["detection"]:
                         unsafe_allow_html=True
                     )
 
+                    def _tr(key, default=""):
+                        return text.get(
+                            key,
+                            translations["English"].get(key, default),
+                        )
+
+                    # =================================================
+                    # EXPLAINABLE AI - GRAD-CAM VISUALIZATION
+                    # =================================================
+                    gradcam_result = generate_gradcam(temp_image_path)
+
+                    st.markdown('<div class="custom-card">', unsafe_allow_html=True)
+                    st.subheader(f"🔥 {_tr('explainable_ai')}")
+
+                    if gradcam_result.get("success"):
+                        gc_col1, gc_col2 = st.columns(2)
+
+                        with gc_col1:
+                            st.image(
+                                gradcam_result["original_rgb"],
+                                caption=_tr("original_leaf_image"),
+                                use_container_width=True,
+                            )
+
+                        with gc_col2:
+                            st.image(
+                                gradcam_result["overlay_rgb"],
+                                caption=_tr("gradcam_heatmap"),
+                                use_container_width=True,
+                            )
+
+                        st.info(
+                            f"**{_tr('explanation_heading')}:** {_tr('gradcam_explanation')}\n\n"
+                            f"🎨 {_tr('gradcam_colour_legend')}"
+                        )
+                        st.warning(
+                            f"**{_tr('limitation_heading')}:** {_tr('gradcam_limitation')}"
+                        )
+                    else:
+                        st.warning(_tr("gradcam_warning"))
+
+                    st.markdown("</div>", unsafe_allow_html=True)
+
+                    # =================================================
+                    # DISEASE SEVERITY ESTIMATION
+                    # =================================================
+                    severity_result = estimate_severity(
+                        temp_image_path,
+                        predicted_disease=result["disease"],
+                    )
+
+                    st.markdown('<div class="custom-card">', unsafe_allow_html=True)
+                    st.subheader(f"🩺 {_tr('severity_estimation')}")
+
+                    if severity_result.get("success") and severity_result.get("status") == "ok":
+                        category_map = {
+                            "healthy": _tr("severity_healthy"),
+                            "mild": _tr("severity_mild"),
+                            "moderate": _tr("severity_moderate"),
+                            "severe": _tr("severity_severe"),
+                            "unreliable": _tr("severity_unreliable"),
+                        }
+                        category_text = category_map.get(
+                            severity_result.get("category_key"),
+                            severity_result.get("category_label", _tr("severity_unreliable")),
+                        )
+
+                        st.write(
+                            f"### 📊 {_tr('estimated_damaged_area')}: {severity_result['damaged_percentage']}%"
+                        )
+                        st.write(
+                            f"### 🏷️ {_tr('severity_label')}: {category_text}"
+                        )
+                        st.caption(
+                            f"{_tr('methodology_heading')}: {_tr('severity_calculation')}"
+                        )
+
+                        sev_col1, sev_col2, sev_col3 = st.columns(3)
+
+                        with sev_col1:
+                            st.image(
+                                severity_result["original_rgb"],
+                                caption=_tr("original_leaf_image"),
+                                use_container_width=True,
+                            )
+
+                        with sev_col2:
+                            st.image(
+                                severity_result["leaf_mask_rgb"],
+                                caption=_tr("leaf_segmentation_mask"),
+                                use_container_width=True,
+                            )
+
+                        with sev_col3:
+                            st.image(
+                                severity_result["damage_overlay_rgb"],
+                                caption=_tr("detected_damage_regions"),
+                                use_container_width=True,
+                            )
+
+                        st.info(
+                            f"**{_tr('explanation_heading')}:** {_tr('severity_explanation')}"
+                        )
+                        st.warning(
+                            f"**{_tr('limitation_heading')}:** {_tr('severity_limitation')}"
+                        )
+                    else:
+                        st.warning(_tr("severity_unreliable_msg"))
+                        st.caption(
+                            f"**{_tr('limitation_heading')}:** {_tr('severity_limitation')}"
+                        )
+
+                    st.markdown("</div>", unsafe_allow_html=True)
+
                 except Exception as e:
 
                     st.error(
@@ -576,23 +692,3 @@ elif page == text["history"]:
 
         st.info(text["history_empty"])
 
-
-
-# =========================
-# DELETE PREDICTION
-# =========================
-
-def delete_prediction(record_id):
-
-    conn = create_connection()
-
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        DELETE FROM history
-        WHERE id = ?
-    """, (record_id,))
-
-    conn.commit()
-
-    conn.close()
